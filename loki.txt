@@ -1,0 +1,23 @@
+Workflow:
+
+here's genesis, make a change, click save
+go to browser, click refresh, see updated:
+
+Feature Set:
+
+hardcoded productId list { products:[{name:'name', id:'productId'}]})
+
+request productId
+    (receive JSON { ingr: 'statement' })
+request label/productId
+    receive png
+
+Page elements:
+<title>Genesis API - Loki</title>
+<ul>products</ul><span>REST endpoint for selection</span>
+<button>show data</button>
+
+<panel>
+<img png>view nutrFacts</img>
+<caption>ingr statement</caption>
+</panel>
