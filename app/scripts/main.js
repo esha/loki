@@ -2,10 +2,10 @@
     'use strict';
     var _ = window.app = {
         debug: window.DEBUG || /debug/.test(window.location+''),
-        dom: ['product','endpoints','label','statement'],
+        dom: ['product','endpoints','label','ingredients','allergens'],
         url: {
             root: '/fake',
-            statement: '/{id}',
+            food: '/{id}',
             label: '/label/{id}'
         },
         products: [
@@ -18,40 +18,58 @@
             var id = dom.product.val();
             return !id || {
                 label: _.fillURL(url.label, id),
-                statement: _.fillURL(url.statement, id)
+                food: _.fillURL(url.food, id)
             };
         },
         events: {
             update: function() {
                 var endpoints = _.endpoints();
-                dom.endpoints.html(endpoints.statement + '<br>' + endpoints.label);
+                dom.endpoints.html(endpoints.food + '<br>' + endpoints.label);
             },
             show: function() {
                 var endpoints = _.endpoints();
                 dom.label.attr('src', endpoints.label);
-                dom.statement.text('Loading...');
-                var ajax = $.getJSON(endpoints.statement);
+                dom.ingredients.text('Loading...');
+                var ajax = $.getJSON(endpoints.food);
                 ajax.done(function(data) {
-                    dom.statement.text(data.statement);
+                    dom.ingredients.text(data.IngredientStatementInfo.AlternateText);
+                    var allergens = '';
+                    data.Recipe.AllergenStatements.forEach(function(allergen) {
+                        allergen.AlternateText.forEach(function(alt) {
+                            allergens += alt.valueField + ' ';
+                        });
+                    });
+                    dom.allergens.text(allergens);
                 });
             }
         },
-        trace: function(fn, key) {
-            return function() {
-                console.log('Entering '+(key||fn.name), arguments.length ? arguments : '');
-                var ret = fn.apply(this, arguments);
-                console.log('Exiting '+(key||fn.name), ret === undefined ? '' : ret);
-                return ret;
-            };
+        trace: function(o, k) {
+            if ($.isPlainObject(o)) {
+                Object.keys(o).forEach(function(key) {
+                    if (k && key === k) {
+                        o[key] = _.trace(o[key], key);
+                    }
+                });
+                return o;
+            }
+            if ($.isFunction(o)) {
+                return function() {
+                    console.log('Entering '+(k||o.name), arguments.length ? arguments : '');
+                    var ret = o.apply(this, arguments);
+                    console.log('Exiting '+(k||o.name), ret === undefined ? '' : ret);
+                    return ret;
+                };
+            }
+            return o;
         },
         init: function(_) {
             // infrastructure
+            if (_.debug){ _.trace(_); }
             _.dom.forEach(function(name) {
                 dom[name] = $('[id="'+name+'"]');
             });
             Object.keys(_.events).forEach(function(key) {
-                var fn = _.events[key];
-                $doc.on(key, _.debug ? fn : _.trace(fn, key));
+                $doc.on(key, _.events[key]);
             });
             // interface
             _.products.forEach(function(product) {
