@@ -3,7 +3,7 @@ Workflow:
 here's genesis, make a change, click save
 go to browser, click refresh, see updated:
 
-Feature Set:
+Feature Set (thus far):
 
 hardcoded productId list { products:[{name:'name', id:'productId'}]})
 
@@ -21,3 +21,33 @@ Page elements:
 <img png>view nutrFacts</img>
 <caption>ingr statement</caption>
 </panel>
+
+
+Visuals:
+	menu display:
+		as food list
+		or food image tiles (with name in caption)
+		or table of food info (name, servings, cals, p/c/f)
+	food display:
+		name as title
+		nutrition facts in prime spot
+		ingredient list
+		allergen list (or "none")
+	food display location:
+		static right panel
+		or slide-in right panel
+		or pop-up
+		or replace menu
+
+Actions:
+	start -> load foods
+	loaded foods -> display table
+	loaded foods -> load nutr data
+	loaded nutr data -> fill table (serving size, Cals, P/C/F)
+	pick food -> clear nutr facts, ingredients, allergens
+	pick food -> request/display nutr facts png
+	pick food -> load ingredient data
+	pick food -> load allergen data
+	loaded ingredient data -> display ingredients
+	loaded allergen data -> display allergens
+
