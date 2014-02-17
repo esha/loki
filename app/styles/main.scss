@@ -21,13 +21,10 @@ body {
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
-.marketing,
+.row,
 .footer {
     padding-left: 15px;
     padding-right: 15px;
-}
-.marketing {
-    color: white;
 }
 
 /* Custom page header */
@@ -35,40 +32,20 @@ body {
     margin-bottom: 15%;
 }
 
-.nav-pills > li.active > a,
-.nav-pills > li.active > a:hover,
-.nav-pills > li.active > a:focus {
-    color: #773300;
-    background-color: #fff;
-}
-.nav-pills > li > a,
-.nav-pills > li > a:hover,
-.nav-pills > li > a:focus {
-    color: #773300;
-}
-
 .container-narrow > hr {
     margin: 30px 0;
 }
 
-/* Main marketing message and sign up button */
-.jumbotron {
-    text-align: center;
-    border-bottom: 1px solid #e5e5e5;
+.col-md-8, .col-md-4 {
+    padding-right: 0;
+    padding-left: 0;
+}
+.panel {
+    margin-top: 40px;
 }
 
-.jumbotron .btn {
-    font-size: 21px;
-    padding: 14px 24px;
-}
-
-/* Supporting marketing content */
-.marketing {
-    margin: 40px 0;
-}
-
-.marketing p + h4 {
-    margin-top: 28px;
+.customer .developer {
+    display: none;
 }
 
 @media screen and (max-width: 500px) {

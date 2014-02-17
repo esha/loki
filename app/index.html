@@ -18,27 +18,38 @@
         <link rel="import" href="elements/list.html">
         <link rel="import" href="elements/greeting.html">
     </head>
-    <body>
+    <body class="customer">
     <!--[if lt IE 10]>
         <p class="browsehappy">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a>.</p>
     <![endif]-->
         <div class="container">
             <div class="header">
-                <ul class="nav nav-pills pull-right">
-                    <li class="active"><a href="#"><span class="glyphicon glyphicon-cutlery"></span> Menu</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-filter"></span> On Tap</a></li>
-                </ul>
+                <h2 class="pull-right">
+                    <span class="glyphicon glyphicon-cutlery"></span>
+                    Nutritional Info
+                </h2>
             </div>
-            <div class="row marketing">
-                <div class="col-lg-6">
-                    <h4>Lunch</h4>
-                    <p>TODO</p>
-
-                    <h4>Happy Hour</h4>
-                    <p>TODO</p>
-
-                    <h4>Dinner</h4>
-                    <p>TODO</p>
+            <div class="row">
+                <div class="panel panel-default col-md-8">
+                    <div class="panel-heading">Menu Items</div
+                    <!-- turn this into an element? -->
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <!-- turn these into elements? -->
+                            <a click="open">TODO: load menu items</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel col-md-4">
+                    <!-- turn this into an element? -->
+                    <div id="output">
+                        <div id="ingredients"></div>
+                        <div id="allergens"></div>
+                        <img id="label" src=""/>
+                        <div id="details" class="developer">
+                            Endpoints: <div id="endpoints"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="footer">
@@ -49,6 +60,8 @@ Suite 100
 Salem, OR 97306</span></pre>
             </div>
         </div>
+        <script src="bower_components/eventi/dist/Eventi.min.js"></script>
+        <script src="bower_components/reqwest/dist/reqwest.min.js"></script>
         <script>
         document.addEventListener('WebComponentsReady', function() {
             // Perform some behaviour
