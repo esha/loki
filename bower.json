@@ -1,10 +1,14 @@
 {
   "name": "loki",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "modernizr": "~2.6.2",
-    "jquery": "~1.9.1",
-    "trigger": "~1.1.1"
+    "bootstrap": "~3.0.3",
+    "HTML": "^0.11.0",
+    "API": "nbubna/API",
+    "store2": "~2.1.4",
+    "eventi": "^1.0.1",
+    "jquery": "~1.10.2"
   },
   "devDependencies": {}
 }

@@ -1,86 +1,83 @@
-(function($, $doc, window, trigger) {
+(function(document, Eventi, ajax, store) {
     'use strict';
     var _ = window.app = {
-        debug: window.DEBUG || /debug/.test(window.location+''),
-        dom: ['product','endpoints','label','ingredients','allergens'],
-        url: {
-            root: '/fake',
-            food: '/{id}',
-            label: '/label/{id}'
-        },
+        dom: 'api json product label ingredients allergens'.split(' '),
         products: [
             { name:'Product Name', id:'product-id-of-some-sort' }
         ],
-        fillURL: function(url, id) {
-            return _.url.root + url.replace(/{id}/, id);
+        base: '/fake',
+        paths: {
+            food: '/{id}',
+            label: '/label/{id}'
         },
-        endpoints: function() {
-            var id = dom.product.val();
-            return !id || {
-                label: _.fillURL(url.label, id),
-                food: _.fillURL(url.food, id)
-            };
+        path: function(path, id) {
+            path = _.base + (_.paths[path] || path);
+            return id ? path.replace(/{id}/, id) : path;
+        },
+        param: function(url, key, val) {
+            return !val && val !== 0 && val !== false ? url :
+                url + (url.indexOf('?')>0 ? '&':'?') + key + '=' + val;
+        },
+        ajax: function(url, data, opts) {
+            if (data && !(opts && opts.method === 'POST')) {
+                for (var key in data) {
+                    url = _.param(url, key, data[key]);
+                }
+                data = null;
+            }
+            if (!opts) {
+                opts = { method: 'GET' };
+            }
+            opts.url = url;
+            opts.data = data;
+            opts.dataType = 'json';
+
+            dom.api.values({
+                url: opts.url.replace(_.base, ''),
+                method: opts.method
+            });
+            dom.api.classList.remove('hidden');
+            return ajax(opts).then(function(response) {
+                store('json', response);
+                return response;
+            });
         },
         events: {
-            update: function() {
-                var endpoints = _.endpoints();
-                dom.endpoints.html(endpoints.food + '<br>' + endpoints.label);
+            'location@#json': function() {
+                var json = store('json');
+                dom.json.innerHTML = json ? JSON.stringify(json, null, 2) : '';
             },
             show: function() {
-                var endpoints = _.endpoints();
-                dom.label.attr('src', endpoints.label);
-                dom.ingredients.text('Loading...');
-                var ajax = $.getJSON(endpoints.food);
-                ajax.done(function(data) {
-                    dom.ingredients.text(data.IngredientStatementInfo.AlternateText);
+                var id = dom.product.value;
+                dom.label.setAttribute('src', _.path('label', id));
+                dom.ingredients.innerText = 'Loading...';
+                _.ajax(_.path('food', id)).done(function(data) {
+                    dom.ingredients.innerText = data.IngredientStatementInfo.AlternateText;
                     var allergens = '';
                     data.Recipe.AllergenStatements.forEach(function(allergen) {
                         allergen.AlternateText.forEach(function(alt) {
                             allergens += alt.valueField + ' ';
                         });
                     });
-                    dom.allergens.text(allergens);
+                    dom.allergens.innerText = allergens;
                 });
             }
         },
-        trace: function(o, k) {
-            if ($.isPlainObject(o)) {
-                Object.keys(o).forEach(function(key) {
-                    if (k && key === k) {
-                        o[key] = _.trace(o[key], key);
-                    }
-                });
-                return o;
-            }
-            if ($.isFunction(o)) {
-                return function() {
-                    console.log('Entering '+(k||o.name), arguments.length ? arguments : '');
-                    var ret = o.apply(this, arguments);
-                    console.log('Exiting '+(k||o.name), ret === undefined ? '' : ret);
-                    return ret;
-                };
-            }
-            return o;
-        },
-        init: function(_) {
+        init: function() {
             // infrastructure
-            if (_.debug){ _.trace(_); }
-            _.dom.forEach(function(name) {
-                dom[name] = $('[id="'+name+'"]');
+            dom.forEach(function(name) {
+                dom[name] = document.getElementById(name);
             });
-            Object.keys(_.events).forEach(function(key) {
-                $doc.on(key, _.events[key]);
-            });
+            Eventi.on(window, _.events);
             // interface
             _.products.forEach(function(product) {
                 var option = '<option value="'+product.id+'">'+product.name+'</option>';
-                dom.product.append(option);
+                dom.product.insertAdjacentHTML('beforeend', option);
             });
-            trigger('update show');
+            Eventi.fire('update show');
         }
     },
-    dom = _.dom,
-    url = _.url;
-    _.init(_);
+    dom = _.dom;
+    _.init();
 
-})(jQuery, jQuery(document), window, trigger);
+})(document, window.Eventi, jQuery.ajax, window.store);
